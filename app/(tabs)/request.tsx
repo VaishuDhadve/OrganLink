@@ -46,7 +46,7 @@ export default function RequestScreen() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <AlertCircle size={24} color="#1a5276" />
+        <AlertCircle size={24} color="#E8315B" />
         <Text style={styles.headerText}>
           Please fill out this form with accurate information to request an organ donation.
         </Text>
@@ -236,7 +236,7 @@ export default function RequestScreen() {
               value={isUrgent}
               onValueChange={setIsUrgent}
               trackColor={{ false: '#d1d1d1', true: '#2980b9' }}
-              thumbColor={Platform.OS === 'ios' ? undefined : isUrgent ? '#1a5276' : '#f4f3f4'}
+              thumbColor={Platform.OS === 'ios' ? undefined : isUrgent ? '#E8315B' : '#f4f3f4'}
             />
           </View>
           <Text style={styles.switchHelp}>
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontFamily: 'Inter-SemiBold',
     fontSize: 18,
-    color: '#1a5276',
+    color: '#E8315B',
     marginBottom: 15,
     marginTop: 10,
   },
@@ -311,13 +311,10 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   input: {
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    padding: 12,
-    fontFamily: 'Inter-Regular',
-    fontSize: 14,
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
+    paddingVertical: 10,
+    fontSize: 16,
   },
   inputError: {
     borderColor: '#e74c3c',
@@ -344,7 +341,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   optionChipSelected: {
-    backgroundColor: '#1a5276',
+    backgroundColor: '#E8315B',
   },
   optionChipText: {
     fontFamily: 'Inter-Medium',
@@ -387,7 +384,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   submitButton: {
-    backgroundColor: '#1a5276',
+    backgroundColor: '#E8315B',
     borderRadius: 8,
     paddingVertical: 15,
     alignItems: 'center',

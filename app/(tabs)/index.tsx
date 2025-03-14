@@ -4,7 +4,6 @@ import { Bell, Heart, Users, Award } from 'lucide-react-native';
 export default function HomeScreen() {
   return (
     <ScrollView style={styles.container}>
-
       {/* Welcome Section */}
       <View style={styles.welcomeSection}>
         <Text style={styles.welcomeText}>Welcome back, John!</Text>
@@ -71,8 +70,11 @@ const styles = StyleSheet.create({
   welcomeSection: {
     paddingHorizontal: 20,
     marginBottom: 20,
+    
   },
   welcomeText: {
+    marginTop:20,
+    padding:5,
     fontFamily: 'Inter-Bold',
     fontSize: 22,
     color: '#333',
@@ -131,7 +133,7 @@ const styles = StyleSheet.create({
   seeAllText: {
     fontFamily: 'Inter-Medium',
     fontSize: 14,
-    color: '#2980b9',
+    color: '#E8315B',
   },
   requestsScroll: {
     paddingLeft: 20,
@@ -162,7 +164,7 @@ const styles = StyleSheet.create({
   bloodTypeText: {
     fontFamily: 'Inter-SemiBold',
     fontSize: 12,
-    color: '#1976d2',
+    color: '#E8315B',
   },
   urgentTag: {
     fontFamily: 'Inter-SemiBold',
@@ -188,7 +190,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   requestButton: {
-    backgroundColor: '#1a5276',
+    backgroundColor: '#E8315B',
     borderRadius: 6,
     paddingVertical: 8,
     alignItems: 'center',

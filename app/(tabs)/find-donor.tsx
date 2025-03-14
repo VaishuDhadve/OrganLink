@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
   donorTagText: {
     fontFamily: 'Inter-Medium',
     fontSize: 12,
-    color: '#1976d2',
+    color: '#E8315B',
   },
   donorLocation: {
     flexDirection: 'row',
@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   contactButton: {
-    backgroundColor: '#1a5276',
+    backgroundColor: '#E8315B',
     borderRadius: 6,
     paddingVertical: 8,
     paddingHorizontal: 12,

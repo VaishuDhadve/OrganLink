@@ -24,7 +24,7 @@ export default function ProfileScreen() {
       {/* Donor Status */}
       <View style={styles.statusCard}>
         <View style={styles.statusHeader}>
-          <Award size={20} color="#1a5276" />
+          <Award size={20} color="#E8315B" />
           <Text style={styles.statusTitle}>Donor Status</Text>
         </View>
         <View style={styles.statusDetails}>
@@ -85,9 +85,9 @@ export default function ProfileScreen() {
             <Text style={styles.menuItemText}>Push Notifications</Text>
           </View>
           <Switch
-            value={true}
+            value={false}
             trackColor={{ false: '#d1d1d1', true: '#2980b9' }}
-            thumbColor={Platform.OS === 'ios' ? undefined : true ? '#1a5276' : '#f4f3f4'}
+            thumbColor={Platform.OS === 'ios' ? undefined : true ? '#E8315B' : '#f4f3f4'}
           />
         </View>
         
@@ -99,7 +99,7 @@ export default function ProfileScreen() {
           <Switch
             value={true}
             trackColor={{ false: '#d1d1d1', true: '#2980b9' }}
-            thumbColor={Platform.OS === 'ios' ? undefined : true ? '#1a5276' : '#f4f3f4'}
+            thumbColor={Platform.OS === 'ios' ? undefined : true ? '#E8315B' : '#f4f3f4'}
           />
         </View>
         
@@ -111,7 +111,7 @@ export default function ProfileScreen() {
           <Switch
             value={false}
             trackColor={{ false: '#d1d1d1', true: '#2980b9' }}
-            thumbColor={Platform.OS === 'ios' ? undefined : false ? '#1a5276' : '#f4f3f4'}
+            thumbColor={Platform.OS === 'ios' ? undefined : false ? '#E8315B' : '#f4f3f4'}
           />
         </View>
       </View>
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   profileBadge: {
-    backgroundColor: '#1a5276',
+    backgroundColor: '#E8315B',
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 10,
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
   updateButtonText: {
     fontFamily: 'Inter-Medium',
     fontSize: 14,
-    color: '#1a5276',
+    color: '#E8315B',
   },
   section: {
     backgroundColor: '#fff',
