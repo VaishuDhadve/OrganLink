@@ -1,414 +1,372 @@
-import { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Switch, Platform } from 'react-native';
-import { Calendar, Clock, MapPin, CircleAlert as AlertCircle, Info } from 'lucide-react-native';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  Switch,
+  Platform,
+} from "react-native";
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  AlertCircle,
+  Info,
+} from "lucide-react-native";
 
-export default function RequestScreen() {
-  const [fullName, setFullName] = useState('');
-  const [age, setAge] = useState('');
-  const [contactNumber, setContactNumber] = useState('');
-  const [hospitalName, setHospitalName] = useState('');
-  const [hospitalAddress, setHospitalAddress] = useState('');
-  const [organType, setOrganType] = useState('');
-  const [bloodType, setBloodType] = useState('');
-  const [urgencyLevel, setUrgencyLevel] = useState('medium');
-  const [additionalInfo, setAdditionalInfo] = useState('');
-  const [isUrgent, setIsUrgent] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+interface FormErrors {
+  fullName?: string;
+  age?: string;
+  contactNumber?: string;
+  hospitalName?: string;
+  hospitalAddress?: string;
+  organType?: string;
+  bloodType?: string;
+}
 
-  const organTypes = ['Kidney', 'Liver', 'Heart', 'Lung', 'Cornea', 'Bone Marrow'];
-  const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
-  
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-    
-    if (!fullName) newErrors.fullName = 'Full name is required';
-    if (!age) newErrors.age = 'Age is required';
-    else if (isNaN(Number(age))) newErrors.age = 'Age must be a number';
-    
-    if (!contactNumber) newErrors.contactNumber = 'Contact number is required';
-    if (!hospitalName) newErrors.hospitalName = 'Hospital name is required';
-    if (!hospitalAddress) newErrors.hospitalAddress = 'Hospital address is required';
-    if (!organType) newErrors.organType = 'Organ type is required';
-    if (!bloodType) newErrors.bloodType = 'Blood type is required';
-    
+export default function RequestScreen(): React.ReactElement {
+  const [fullName, setFullName] = useState<string>("");
+  const [age, setAge] = useState<string>("");
+  const [contactNumber, setContactNumber] = useState<string>("");
+  const [hospitalName, setHospitalName] = useState<string>("");
+  const [hospitalAddress, setHospitalAddress] = useState<string>("");
+  const [organType, setOrganType] = useState<string>("");
+  const [bloodType, setBloodType] = useState<string>("");
+  const [urgencyLevel, setUrgencyLevel] = useState<"low" | "medium" | "high">(
+    "medium"
+  );
+  const [additionalInfo, setAdditionalInfo] = useState<string>("");
+  const [isUrgent, setIsUrgent] = useState<boolean>(false);
+  const [errors, setErrors] = useState<FormErrors>({});
+
+  const organTypes: string[] = [
+    "Kidney",
+    "Liver",
+    "Heart",
+    "Lung",
+    "Cornea",
+    "Bone Marrow",
+  ];
+  const bloodTypes: string[] = [
+    "A+",
+    "A-",
+    "B+",
+    "B-",
+    "AB+",
+    "AB-",
+    "O+",
+    "O-",
+  ];
+
+  const validateForm = (): boolean => {
+    const newErrors: FormErrors = {};
+
+    if (!fullName) newErrors.fullName = "Full name is required";
+    if (!age) newErrors.age = "Age is required";
+    else if (isNaN(Number(age))) newErrors.age = "Age must be a number";
+
+    if (!contactNumber) newErrors.contactNumber = "Contact number is required";
+    if (!hospitalName) newErrors.hospitalName = "Hospital name is required";
+    if (!hospitalAddress)
+      newErrors.hospitalAddress = "Hospital address is required";
+    if (!organType) newErrors.organType = "Organ type is required";
+    if (!bloodType) newErrors.bloodType = "Blood type is required";
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  
-  const handleSubmit = () => {
+
+  const handleSubmit = (): void => {
     if (validateForm()) {
       // Submit the form
-      console.log('Form submitted');
+      console.log("Form submitted");
       // Reset form or navigate to confirmation
     }
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
+    <ScrollView className={`flex-1 bg-[#f5f5f5]`}>
+      <View className={`bg-blue-50 p-4 flex-row items-center mb-4`}>
         <AlertCircle size={24} color="#E8315B" />
-        <Text style={styles.headerText}>
-          Please fill out this form with accurate information to request an organ donation.
+        <Text className={`font-normal text-sm text-gray-800 ml-2 flex-1`}>
+          Please fill out this form with accurate information to request an
+          organ donation.
         </Text>
       </View>
-      
-      <View style={styles.formContainer}>
-        <Text style={styles.sectionTitle}>Personal Information</Text>
-        
-        <View style={styles.inputGroup}>
-          <Text style={styles.inputLabel}>Full Name</Text>
+
+      <View className={`px-5 pb-8`}>
+        <Text className={`font-semibold text-lg text-[#E8315B] mb-4 mt-2`}>
+          Personal Information
+        </Text>
+
+        <View className={`mb-5`}>
+          <Text className={`font-medium text-sm text-gray-800 mb-2`}>
+            Full Name
+          </Text>
           <TextInput
-            style={[styles.input, errors.fullName && styles.inputError]}
+            className={`border-b ${
+              errors.fullName ? "border-red-500" : "border-gray-300"
+            } py-2 text-base`}
             value={fullName}
             onChangeText={setFullName}
             placeholder="Enter your full name"
           />
-          {errors.fullName && <Text style={styles.errorText}>{errors.fullName}</Text>}
+          {errors.fullName && (
+            <Text className={`text-red-500 text-xs mt-1`}>
+              {errors.fullName}
+            </Text>
+          )}
         </View>
-        
-        <View style={styles.inputGroup}>
-          <Text style={styles.inputLabel}>Age</Text>
+
+        <View className={`mb-5`}>
+          <Text className={`font-medium text-sm text-gray-800 mb-2`}>Age</Text>
           <TextInput
-            style={[styles.input, errors.age && styles.inputError]}
+            className={`border-b ${
+              errors.age ? "border-red-500" : "border-gray-300"
+            } py-2 text-base`}
             value={age}
             onChangeText={setAge}
             placeholder="Enter your age"
             keyboardType="numeric"
           />
-          {errors.age && <Text style={styles.errorText}>{errors.age}</Text>}
+          {errors.age && (
+            <Text className={`text-red-500 text-xs mt-1`}>{errors.age}</Text>
+          )}
         </View>
-        
-        <View style={styles.inputGroup}>
-          <Text style={styles.inputLabel}>Contact Number</Text>
+
+        <View className={`mb-5`}>
+          <Text className={`font-medium text-sm text-gray-800 mb-2`}>
+            Contact Number
+          </Text>
           <TextInput
-            style={[styles.input, errors.contactNumber && styles.inputError]}
+            className={`border-b ${
+              errors.contactNumber ? "border-red-500" : "border-gray-300"
+            } py-2 text-base`}
             value={contactNumber}
             onChangeText={setContactNumber}
             placeholder="Enter your contact number"
             keyboardType="phone-pad"
           />
-          {errors.contactNumber && <Text style={styles.errorText}>{errors.contactNumber}</Text>}
+          {errors.contactNumber && (
+            <Text className={`text-red-500 text-xs mt-1`}>
+              {errors.contactNumber}
+            </Text>
+          )}
         </View>
-        
-        <Text style={styles.sectionTitle}>Hospital Information</Text>
-        
-        <View style={styles.inputGroup}>
-          <Text style={styles.inputLabel}>Hospital Name</Text>
+
+        <Text className={`font-semibold text-lg text-[#E8315B] mb-4 mt-2`}>
+          Hospital Information
+        </Text>
+
+        <View className={`mb-5`}>
+          <Text className={`font-medium text-sm text-gray-800 mb-2`}>
+            Hospital Name
+          </Text>
           <TextInput
-            style={[styles.input, errors.hospitalName && styles.inputError]}
+            className={`border-b ${
+              errors.hospitalName ? "border-red-500" : "border-gray-300"
+            } py-2 text-base`}
             value={hospitalName}
             onChangeText={setHospitalName}
             placeholder="Enter hospital name"
           />
-          {errors.hospitalName && <Text style={styles.errorText}>{errors.hospitalName}</Text>}
+          {errors.hospitalName && (
+            <Text className={`text-red-500 text-xs mt-1`}>
+              {errors.hospitalName}
+            </Text>
+          )}
         </View>
-        
-        <View style={styles.inputGroup}>
-          <Text style={styles.inputLabel}>Hospital Address</Text>
+
+        <View className={`mb-5`}>
+          <Text className={`font-medium text-sm text-gray-800 mb-2`}>
+            Hospital Address
+          </Text>
           <TextInput
-            style={[styles.input, errors.hospitalAddress && styles.inputError]}
+            className={`border-b ${
+              errors.hospitalAddress ? "border-red-500" : "border-gray-300"
+            } py-2 text-base`}
             value={hospitalAddress}
             onChangeText={setHospitalAddress}
             placeholder="Enter hospital address"
             multiline
             numberOfLines={3}
           />
-          {errors.hospitalAddress && <Text style={styles.errorText}>{errors.hospitalAddress}</Text>}
+          {errors.hospitalAddress && (
+            <Text className={`text-red-500 text-xs mt-1`}>
+              {errors.hospitalAddress}
+            </Text>
+          )}
         </View>
-        
-        <Text style={styles.sectionTitle}>Organ Information</Text>
-        
-        <View style={styles.inputGroup}>
-          <Text style={styles.inputLabel}>Organ Type</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.optionsScroll}>
-            {organTypes.map(type => (
+
+        <Text className={`font-semibold text-lg text-[#E8315B] mb-4 mt-2`}>
+          Organ Information
+        </Text>
+
+        <View className={`mb-5`}>
+          <Text className={`font-medium text-sm text-gray-800 mb-2`}>
+            Organ Type
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            className={`flex-row mb-1`}>
+            {organTypes.map((type) => (
               <TouchableOpacity
                 key={type}
-                style={[
-                  styles.optionChip,
-                  organType === type && styles.optionChipSelected
-                ]}
-                onPress={() => setOrganType(type)}
-              >
+                className={`${
+                  organType === type ? "bg-[#E8315B]" : "bg-[#f0f0f0]"
+                } rounded-full px-4 py-2 mr-2`}
+                onPress={() => setOrganType(type)}>
                 <Text
-                  style={[
-                    styles.optionChipText,
-                    organType === type && styles.optionChipTextSelected
-                  ]}
-                >
+                  className={`font-medium text-sm ${
+                    organType === type ? "text-white" : "text-gray-600"
+                  }`}>
                   {type}
                 </Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
-          {errors.organType && <Text style={styles.errorText}>{errors.organType}</Text>}
+          {errors.organType && (
+            <Text className={`text-red-500 text-xs mt-1`}>
+              {errors.organType}
+            </Text>
+          )}
         </View>
-        
-        <View style={styles.inputGroup}>
-          <Text style={styles.inputLabel}>Blood Type</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.optionsScroll}>
-            {bloodTypes.map(type => (
+
+        <View className={`mb-5`}>
+          <Text className={`font-medium text-sm text-gray-800 mb-2`}>
+            Blood Type
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            className={`flex-row mb-1`}>
+            {bloodTypes.map((type) => (
               <TouchableOpacity
                 key={type}
-                style={[
-                  styles.optionChip,
-                  bloodType === type && styles.optionChipSelected
-                ]}
-                onPress={() => setBloodType(type)}
-              >
+                className={`${
+                  bloodType === type ? "bg-[#E8315B]" : "bg-[#f0f0f0]"
+                } rounded-full px-4 py-2 mr-2`}
+                onPress={() => setBloodType(type)}>
                 <Text
-                  style={[
-                    styles.optionChipText,
-                    bloodType === type && styles.optionChipTextSelected
-                  ]}
-                >
+                  className={`font-medium text-sm ${
+                    bloodType === type ? "text-white" : "text-gray-600"
+                  }`}>
                   {type}
                 </Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
-          {errors.bloodType && <Text style={styles.errorText}>{errors.bloodType}</Text>}
+          {errors.bloodType && (
+            <Text className={`text-red-500 text-xs mt-1`}>
+              {errors.bloodType}
+            </Text>
+          )}
         </View>
-        
-        <View style={styles.inputGroup}>
-          <Text style={styles.inputLabel}>Urgency Level</Text>
-          <View style={styles.urgencyContainer}>
+
+        <View className={`mb-5`}>
+          <Text className={`font-medium text-sm text-gray-800 mb-2`}>
+            Urgency Level
+          </Text>
+          <View className={`flex-row justify-beeen`}>
             <TouchableOpacity
-              style={[
-                styles.urgencyOption,
-                urgencyLevel === 'low' && styles.urgencyOptionSelected,
-                { backgroundColor: urgencyLevel === 'low' ? '#4caf50' : '#e8f5e9' }
-              ]}
-              onPress={() => setUrgencyLevel('low')}
-            >
+              className={`flex-1 py-2 items-center rounded-lg mx-1 ${
+                urgencyLevel === "low" ? "bg-green-500" : "bg-green-50"
+              }`}
+              onPress={() => setUrgencyLevel("low")}>
               <Text
-                style={[
-                  styles.urgencyOptionText,
-                  urgencyLevel === 'low' && styles.urgencyOptionTextSelected
-                ]}
-              >
+                className={`font-medium text-sm ${
+                  urgencyLevel === "low" ? "text-white" : "text-gray-800"
+                }`}>
                 Low
               </Text>
             </TouchableOpacity>
-            
+
             <TouchableOpacity
-              style={[
-                styles.urgencyOption,
-                urgencyLevel === 'medium' && styles.urgencyOptionSelected,
-                { backgroundColor: urgencyLevel === 'medium' ? '#ff9800' : '#fff3e0' }
-              ]}
-              onPress={() => setUrgencyLevel('medium')}
-            >
+              className={`flex-1 py-2 items-center rounded-lg mx-1 ${
+                urgencyLevel === "medium" ? "bg-orange-500" : "bg-orange-50"
+              }`}
+              onPress={() => setUrgencyLevel("medium")}>
               <Text
-                style={[
-                  styles.urgencyOptionText,
-                  urgencyLevel === 'medium' && styles.urgencyOptionTextSelected
-                ]}
-              >
+                className={`font-medium text-sm ${
+                  urgencyLevel === "medium" ? "text-white" : "text-gray-800"
+                }`}>
                 Medium
               </Text>
             </TouchableOpacity>
-            
+
             <TouchableOpacity
-              style={[
-                styles.urgencyOption,
-                urgencyLevel === 'high' && styles.urgencyOptionSelected,
-                { backgroundColor: urgencyLevel === 'high' ? '#f44336' : '#ffebee' }
-              ]}
-              onPress={() => setUrgencyLevel('high')}
-            >
+              className={`flex-1 py-2 items-center rounded-lg mx-1 ${
+                urgencyLevel === "high" ? "bg-red-500" : "bg-red-50"
+              }`}
+              onPress={() => setUrgencyLevel("high")}>
               <Text
-                style={[
-                  styles.urgencyOptionText,
-                  urgencyLevel === 'high' && styles.urgencyOptionTextSelected
-                ]}
-              >
+                className={`font-medium text-sm ${
+                  urgencyLevel === "high" ? "text-white" : "text-gray-800"
+                }`}>
                 High
               </Text>
             </TouchableOpacity>
           </View>
         </View>
-        
-        <View style={styles.inputGroup}>
-          <View style={styles.switchContainer}>
-            <Text style={styles.inputLabel}>Mark as Urgent</Text>
+
+        <View className={`mb-5`}>
+          <View className={`flex-row justify-beeen items-center`}>
+            <Text className={`font-medium text-sm text-gray-800`}>
+              Mark as Urgent
+            </Text>
             <Switch
               value={isUrgent}
               onValueChange={setIsUrgent}
-              trackColor={{ false: '#d1d1d1', true: '#2980b9' }}
-              thumbColor={Platform.OS === 'ios' ? undefined : isUrgent ? '#E8315B' : '#f4f3f4'}
+              trackColor={{ false: "#d1d1d1", true: "#2980b9" }}
+              thumbColor={
+                Platform.OS === "ios"
+                  ? undefined
+                  : isUrgent
+                  ? "#E8315B"
+                  : "#f4f3f4"
+              }
             />
           </View>
-          <Text style={styles.switchHelp}>
+          <Text className={`text-xs text-gray-500 mt-1`}>
             Marking as urgent will highlight your request to potential donors
           </Text>
         </View>
-        
-        <View style={styles.inputGroup}>
-          <Text style={styles.inputLabel}>Additional Information</Text>
+
+        <View className={`mb-5`}>
+          <Text className={`font-medium text-sm text-gray-800 mb-2`}>
+            Additional Information
+          </Text>
           <TextInput
-            style={[styles.input, styles.textArea]}
+            className={`border-b border-gray-300 py-2 text-base min-h-24`}
             value={additionalInfo}
             onChangeText={setAdditionalInfo}
             placeholder="Enter any additional information that might be relevant"
             multiline
             numberOfLines={5}
+            textAlignVertical="top"
           />
         </View>
-        
-        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-          <Text style={styles.submitButtonText}>Submit Request</Text>
+
+        <TouchableOpacity
+          className={`bg-[#E8315B] rounded-lg py-4 items-center mt-2`}
+          onPress={handleSubmit}>
+          <Text className={`font-semibold text-base text-white`}>
+            Submit Request
+          </Text>
         </TouchableOpacity>
-        
-        <View style={styles.disclaimer}>
+
+        <View
+          className={`flex-row mt-5 p-4 bg-gray-50 rounded-lg border border-gray-100`}>
           <Info size={16} color="#666" />
-          <Text style={styles.disclaimerText}>
-            By submitting this form, you agree to our terms and conditions regarding organ donation requests.
+          <Text className={`text-xs text-gray-500 ml-2 flex-1`}>
+            By submitting this form, you agree to our terms and conditions
+            regarding organ donation requests.
           </Text>
         </View>
       </View>
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  header: {
-    backgroundColor: '#e3f2fd',
-    padding: 15,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  headerText: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 14,
-    color: '#333',
-    marginLeft: 10,
-    flex: 1,
-  },
-  formContainer: {
-    paddingHorizontal: 20,
-    paddingBottom: 30,
-  },
-  sectionTitle: {
-    fontFamily: 'Inter-SemiBold',
-    fontSize: 18,
-    color: '#E8315B',
-    marginBottom: 15,
-    marginTop: 10,
-  },
-  inputGroup: {
-    marginBottom: 20,
-  },
-  inputLabel: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 14,
-    color: '#333',
-    marginBottom: 8,
-  },
-  input: {
-    borderBottomWidth: 1,
-    borderColor: '#ccc',
-    paddingVertical: 10,
-    fontSize: 16,
-  },
-  inputError: {
-    borderColor: '#e74c3c',
-  },
-  errorText: {
-    color: '#e74c3c',
-    fontFamily: 'Inter-Regular',
-    fontSize: 12,
-    marginTop: 5,
-  },
-  textArea: {
-    minHeight: 100,
-    textAlignVertical: 'top',
-  },
-  optionsScroll: {
-    flexDirection: 'row',
-    marginBottom: 5,
-  },
-  optionChip: {
-    backgroundColor: '#f0f0f0',
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    marginRight: 10,
-  },
-  optionChipSelected: {
-    backgroundColor: '#E8315B',
-  },
-  optionChipText: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 13,
-    color: '#666',
-  },
-  optionChipTextSelected: {
-    color: '#fff',
-  },
-  urgencyContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  urgencyOption: {
-    flex: 1,
-    paddingVertical: 10,
-    alignItems: 'center',
-    borderRadius: 8,
-    marginHorizontal: 5,
-  },
-  urgencyOptionSelected: {
-    borderWidth: 0,
-  },
-  urgencyOptionText: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 14,
-  },
-  urgencyOptionTextSelected: {
-    color: '#fff',
-  },
-  switchContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  switchHelp: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 12,
-    color: '#666',
-    marginTop: 5,
-  },
-  submitButton: {
-    backgroundColor: '#E8315B',
-    borderRadius: 8,
-    paddingVertical: 15,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  submitButtonText: {
-    fontFamily: 'Inter-SemiBold',
-    fontSize: 16,
-    color: '#fff',
-  },
-  disclaimer: {
-    flexDirection: 'row',
-    marginTop: 20,
-    padding: 15,
-    backgroundColor: '#f8f8f8',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#eee',
-  },
-  disclaimerText: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 12,
-    color: '#666',
-    marginLeft: 10,
-    flex: 1,
-  },
-});

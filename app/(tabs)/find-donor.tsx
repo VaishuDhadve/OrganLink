@@ -1,128 +1,162 @@
-import { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Image } from 'react-native';
-import { Search, Filter, MapPin, Clock, Heart } from 'lucide-react-native';
+import { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+} from "react-native";
+import { Search, Filter, MapPin, Clock } from "lucide-react-native";
+
+interface Donor {
+  id: number;
+  name: string;
+  age: number;
+  bloodType: string;
+  organ: string;
+  location: string;
+  distance: string;
+  image: string;
+}
+
+const bloodTypes = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+const organTypes = [
+  "Kidney",
+  "Liver",
+  "Heart",
+  "Lung",
+  "Cornea",
+  "Bone Marrow",
+];
+
+const donors: Donor[] = [
+  {
+    id: 1,
+    name: "David Wilson",
+    age: 32,
+    bloodType: "O+",
+    organ: "Kidney",
+    location: "New York, NY",
+    distance: "2.5 miles",
+    image:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
+  },
+  {
+    id: 2,
+    name: "Emma Johnson",
+    age: 28,
+    bloodType: "A+",
+    organ: "Liver",
+    location: "Brooklyn, NY",
+    distance: "4.2 miles",
+    image:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
+  },
+  {
+    id: 3,
+    name: "Michael Brown",
+    age: 45,
+    bloodType: "B-",
+    organ: "Bone Marrow",
+    location: "Queens, NY",
+    distance: "6.8 miles",
+    image:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
+  },
+  {
+    id: 4,
+    name: "Sophia Martinez",
+    age: 35,
+    bloodType: "AB+",
+    organ: "Cornea",
+    location: "Manhattan, NY",
+    distance: "1.3 miles",
+    image:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
+  },
+];
 
 export default function FindDonorScreen() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedBloodType, setSelectedBloodType] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedBloodType, setSelectedBloodType] = useState<string | null>(
+    null
+  );
   const [selectedOrgan, setSelectedOrgan] = useState<string | null>(null);
 
-  const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
-  const organTypes = ['Kidney', 'Liver', 'Heart', 'Lung', 'Cornea', 'Bone Marrow'];
-
-  const donors = [
-    {
-      id: 1,
-      name: 'David Wilson',
-      age: 32,
-      bloodType: 'O+',
-      organ: 'Kidney',
-      location: 'New York, NY',
-      distance: '2.5 miles',
-      image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80',
-    },
-    {
-      id: 2,
-      name: 'Emma Johnson',
-      age: 28,
-      bloodType: 'A+',
-      organ: 'Liver',
-      location: 'Brooklyn, NY',
-      distance: '4.2 miles',
-      image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80',
-    },
-    {
-      id: 3,
-      name: 'Michael Brown',
-      age: 45,
-      bloodType: 'B-',
-      organ: 'Bone Marrow',
-      location: 'Queens, NY',
-      distance: '6.8 miles',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80',
-    },
-    {
-      id: 4,
-      name: 'Sophia Martinez',
-      age: 35,
-      bloodType: 'AB+',
-      organ: 'Cornea',
-      location: 'Manhattan, NY',
-      distance: '1.3 miles',
-      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80',
-    },
-  ];
-
-  const filteredDonors = donors.filter(donor => {
-    const matchesBloodType = !selectedBloodType || donor.bloodType === selectedBloodType;
-    const matchesOrgan = !selectedOrgan || donor.organ === selectedOrgan;
-    const matchesSearch = !searchQuery || 
-      donor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      donor.location.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    return matchesBloodType && matchesOrgan && matchesSearch;
+  const filteredDonors = donors.filter((donor) => {
+    return (
+      (!selectedBloodType || donor.bloodType === selectedBloodType) &&
+      (!selectedOrgan || donor.organ === selectedOrgan) &&
+      (!searchQuery ||
+        donor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        donor.location.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
   });
 
   return (
-    <View style={styles.container}>
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <View style={styles.searchBar}>
-          <Search size={20} color="#666" style={styles.searchIcon} />
+    <View className="flex-1 bg-gray-100">
+      <View className="bg-white px-5 py-4 border-b border-gray-200">
+        <View className="flex-row items-center bg-gray-200 rounded-lg px-3">
+          <Search size={20} color="#f0f0f0" className="mr-2" />
           <TextInput
-            style={styles.searchInput}
+            className="flex-1 h-10"
             placeholder="Search by name or location"
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
-          <TouchableOpacity style={styles.filterButton}>
+          <TouchableOpacity>
             <Filter size={20} color="#1a5276" />
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* Filters */}
-      <View style={styles.filtersContainer}>
-        <Text style={styles.filterTitle}>Blood Type</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll}>
-          {bloodTypes.map(type => (
+      <View className="bg-white py-4 border-b border-gray-200">
+        <Text className="text-sm font-semibold text-gray-700 px-5 mb-2">
+          Blood Type
+        </Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          className="pl-5 mb-2">
+          {bloodTypes.map((type) => (
             <TouchableOpacity
               key={type}
-              style={[
-                styles.filterChip,
-                selectedBloodType === type && styles.filterChipSelected
-              ]}
-              onPress={() => setSelectedBloodType(selectedBloodType === type ? null : type)}
-            >
+              className={`px-4 py-2 rounded-full mr-2 ${
+                selectedBloodType === type ? "bg-blue-700" : "bg-gray-100"
+              }`}
+              onPress={() =>
+                setSelectedBloodType(selectedBloodType === type ? null : type)
+              }>
               <Text
-                style={[
-                  styles.filterChipText,
-                  selectedBloodType === type && styles.filterChipTextSelected
-                ]}
-              >
+                className={`text-sm font-medium ${
+                  selectedBloodType === type ? "text-white" : "text-gray-600"
+                }`}>
                 {type}
               </Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
-
-        <Text style={styles.filterTitle}>Organ Type</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll}>
-          {organTypes.map(organ => (
+        <Text className="text-sm font-semibold text-gray-700 px-5 mb-2">
+          Organ Type
+        </Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          className="pl-5 mb-2">
+          {organTypes.map((organ) => (
             <TouchableOpacity
               key={organ}
-              style={[
-                styles.filterChip,
-                selectedOrgan === organ && styles.filterChipSelected
-              ]}
-              onPress={() => setSelectedOrgan(selectedOrgan === organ ? null : organ)}
-            >
+              className={`px-4 py-2 rounded-full mr-2 ${
+                selectedOrgan === organ ? "bg-blue-700" : "bg-gray-100"
+              }`}
+              onPress={() =>
+                setSelectedOrgan(selectedOrgan === organ ? null : organ)
+              }>
               <Text
-                style={[
-                  styles.filterChipText,
-                  selectedOrgan === organ && styles.filterChipTextSelected
-                ]}
-              >
+                className={`text-sm font-medium ${
+                  selectedOrgan === organ ? "text-white" : "text-gray-600"
+                }`}>
                 {organ}
               </Text>
             </TouchableOpacity>
@@ -130,36 +164,51 @@ export default function FindDonorScreen() {
         </ScrollView>
       </View>
 
-      {/* Results */}
-      <Text style={styles.resultsText}>
-        {filteredDonors.length} {filteredDonors.length === 1 ? 'donor' : 'donors'} found
+      <Text className="text-sm font-medium text-gray-600 m-5">
+        {filteredDonors.length} donor{filteredDonors.length !== 1 ? "s" : ""}{" "}
+        found
       </Text>
 
-      <ScrollView style={styles.donorsList}>
-        {filteredDonors.map(donor => (
-          <View key={donor.id} style={styles.donorCard}>
-            <Image source={{ uri: donor.image }} style={styles.donorImage} />
-            <View style={styles.donorInfo}>
-              <Text style={styles.donorName}>{donor.name}, {donor.age}</Text>
-              <View style={styles.donorTags}>
-                <View style={styles.donorTag}>
-                  <Text style={styles.donorTagText}>{donor.bloodType}</Text>
+      <ScrollView className="px-5">
+        {filteredDonors.map((donor) => (
+          <View
+            key={donor.id}
+            className="bg-white rounded-lg p-4 mb-3 flex-row shadow-sm">
+            <Image
+              source={{ uri: donor.image }}
+              className="w-16 h-16 rounded-full"
+            />
+            <View className="ml-4 flex-1">
+              <Text className="text-lg font-semibold text-gray-900">
+                {donor.name}, {donor.age}
+              </Text>
+              <View className="flex-row space-x-2 mt-1">
+                <View className="bg-blue-100 rounded px-2 py-1">
+                  <Text className="text-xs font-medium text-blue-800">
+                    {donor.bloodType}
+                  </Text>
                 </View>
-                <View style={styles.donorTag}>
-                  <Text style={styles.donorTagText}>{donor.organ}</Text>
+                <View className="bg-green-100 rounded px-2 py-1">
+                  <Text className="text-xs font-medium text-green-800">
+                    {donor.organ}
+                  </Text>
                 </View>
               </View>
-              <View style={styles.donorLocation}>
+              <View className="flex-row items-center mt-1">
                 <MapPin size={14} color="#666" />
-                <Text style={styles.donorLocationText}>{donor.location}</Text>
+                <Text className="text-xs text-gray-600 ml-1">
+                  {donor.location}
+                </Text>
               </View>
-              <View style={styles.donorDistance}>
+              <View className="flex-row items-center mt-1">
                 <Clock size={14} color="#666" />
-                <Text style={styles.donorDistanceText}>{donor.distance}</Text>
+                <Text className="text-xs text-gray-600 ml-1">
+                  {donor.distance}
+                </Text>
               </View>
             </View>
-            <TouchableOpacity style={styles.contactButton}>
-              <Text style={styles.contactButtonText}>Contact</Text>
+            <TouchableOpacity className="bg-primary rounded px-3 py-2">
+              <Text className="text-white text-sm font-medium">Contact</Text>
             </TouchableOpacity>
           </View>
         ))}
@@ -167,155 +216,3 @@ export default function FindDonorScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  searchContainer: {
-    backgroundColor: '#fff',
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  searchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-    paddingHorizontal: 10,
-  },
-  searchIcon: {
-    marginRight: 10,
-  },
-  searchInput: {
-    flex: 1,
-    height: 40,
-    fontFamily: 'Inter-Regular',
-  },
-  filterButton: {
-    padding: 8,
-  },
-  filtersContainer: {
-    backgroundColor: '#fff',
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  filterTitle: {
-    fontFamily: 'Inter-SemiBold',
-    fontSize: 14,
-    color: '#333',
-    marginLeft: 20,
-    marginBottom: 10,
-  },
-  filterScroll: {
-    paddingLeft: 20,
-    marginBottom: 15,
-  },
-  filterChip: {
-    backgroundColor: '#f0f0f0',
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    marginRight: 10,
-  },
-  filterChipSelected: {
-    backgroundColor: '#1a5276',
-  },
-  filterChipText: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 13,
-    color: '#666',
-  },
-  filterChipTextSelected: {
-    color: '#fff',
-  },
-  resultsText: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 14,
-    color: '#666',
-    margin: 20,
-  },
-  donorsList: {
-    paddingHorizontal: 20,
-  },
-  donorCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 15,
-    marginBottom: 15,
-    flexDirection: 'row',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  donorImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-  },
-  donorInfo: {
-    flex: 1,
-    marginLeft: 15,
-  },
-  donorName: {
-    fontFamily: 'Inter-SemiBold',
-    fontSize: 16,
-    color: '#333',
-    marginBottom: 5,
-  },
-  donorTags: {
-    flexDirection: 'row',
-    marginBottom: 8,
-  },
-  donorTag: {
-    backgroundColor: '#e3f2fd',
-    borderRadius: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    marginRight: 8,
-  },
-  donorTagText: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 12,
-    color: '#E8315B',
-  },
-  donorLocation: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  donorLocationText: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 13,
-    color: '#666',
-    marginLeft: 5,
-  },
-  donorDistance: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  donorDistanceText: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 13,
-    color: '#666',
-    marginLeft: 5,
-  },
-  contactButton: {
-    backgroundColor: '#E8315B',
-    borderRadius: 6,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    justifyContent: 'center',
-  },
-  contactButtonText: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 14,
-    color: '#fff',
-  },
-});

@@ -1,47 +1,47 @@
-import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import Svg, { Path } from 'react-native-svg';
-import { router } from 'expo-router';
+import React from "react";
+import { View, Text, Image, TouchableOpacity, Dimensions } from "react-native";
+import { StatusBar } from "expo-status-bar";
+import Svg, { Path } from "react-native-svg";
+import { router } from "expo-router";
 
+const { width } = Dimensions.get("window");
 
-const { width } = Dimensions.get('window');
-
-const WelcomeScreen = () => {
-
+const WelcomeScreen: React.FC = () => {
   return (
-    <View style={styles.container}>
+    <View className="flex-1 bg-white items-center justify-between">
       <StatusBar style="auto" />
-      
-      
+
       {/* Logo */}
-      <View style={styles.logoContainer}>
+      <View className="flex-1 justify-center items-center mt-16">
         <Image
-          source={require("../assets/images/logo.png")} // You'll need to add this image to your assets
-          style={styles.logo}
+          source={require("../assets/images/logo.png")}
+          className="w-64 h-64 mb-2"
           resizeMode="cover"
         />
-        
       </View>
-      
+
       {/* Buttons */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.loginButton} onPress={()=>{router.replace("/auth/login")}}>
-          <Text style={styles.loginText}>Login</Text>
+      <View className="w-full px-10 mb-40">
+        <TouchableOpacity
+          className="bg-white border-2 border-primary rounded-full py-4 items-center mb-4"
+          onPress={() => router.replace("/auth/login")}>
+          <Text className="text-pink-500 text-lg font-bold">Login</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.createAccountButton} onPress={()=>{router.replace("/auth/hospital-login")}}>
-          <Text style={styles.createAccountText}>Hospital Login</Text>
+
+        <TouchableOpacity
+          className="bg-primary rounded-full py-4 items-center"
+          onPress={() => router.replace("/auth/hospital-login")}>
+          <Text className="text-white text-lg font-bold">Hospital Login</Text>
         </TouchableOpacity>
       </View>
-      
+
       {/* Bottom Wave */}
-      <View style={styles.waveContainer}>
+      <View className="absolute bottom-0 w-full h-36">
         <Svg
           height="150"
           width={width}
           viewBox={`0 0 ${width} 150`}
-          style={styles.waveSvg}
-        >
+          className="absolute bottom-0">
           <Path
             d={`M0 80 
                C${width * 0.2} 30, ${width * 0.3} 100, ${width * 0.4} 60 
@@ -74,95 +74,5 @@ const WelcomeScreen = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  skipContainer: {
-    position: 'absolute',
-    top: 40,
-    right: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  skipText: {
-    color: '#550000',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginRight: 5,
-  },
-  skipArrow: {
-    color: '#550000',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  logoContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 60,
-  },
-  logo: {
-    width: 250,
-    height: 250,
-    marginBottom: 10,
-  },
-  bloodText: {
-    color: '#550000',
-    fontSize: 40,
-    fontWeight: 'bold',
-    letterSpacing: 2,
-  },
-  bestowText: {
-    color: '#550000',
-    fontSize: 40,
-    fontWeight: 'bold',
-    letterSpacing: 2,
-  },
-  buttonContainer: {
-    width: '100%',
-    paddingHorizontal: 40,
-    marginBottom: 160,
-  },
-  loginButton: {
-    backgroundColor: 'white',
-    borderWidth: 2,
-    borderColor: '#e91e63',
-    borderRadius: 30,
-    paddingVertical: 15,
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  loginText: {
-    color: '#e91e63',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  createAccountButton: {
-    backgroundColor: '#e91e63',
-    borderRadius: 30,
-    paddingVertical: 15,
-    alignItems: 'center',
-  },
-  createAccountText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  waveContainer: {
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-    height: 150,
-  },
-  waveSvg: {
-    position: 'absolute',
-    bottom: 0,
-  },
-});
 
 export default WelcomeScreen;

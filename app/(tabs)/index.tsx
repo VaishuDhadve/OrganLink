@@ -1,203 +1,110 @@
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
-import { Bell, Heart, Users, Award } from 'lucide-react-native';
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { Bell, Heart, Users, Award } from "lucide-react-native";
+
+type StatCardProps = {
+  icon: JSX.Element;
+  number: string;
+  label: string;
+};
+
+type RequestCardProps = {
+  bloodType: string;
+  urgency: string;
+  title: string;
+  location: string;
+  timePosted: string;
+};
 
 export default function HomeScreen() {
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView className="flex-1 bg-gray-100">
       {/* Welcome Section */}
-      <View style={styles.welcomeSection}>
-        <Text style={styles.welcomeText}>Welcome back, John!</Text>
-        <Text style={styles.welcomeSubtext}>Thank you for being a part of saving lives.</Text>
+      <View className="px-5 my-5">
+        <Text className="mt-5 text-xl font-bold text-gray-800">
+          Welcome back, John!
+        </Text>
+        <Text className="mt-1 text-sm text-gray-600">
+          Thank you for being a part of saving lives.
+        </Text>
       </View>
 
       {/* Stats Section */}
-      <View style={styles.statsContainer}>
-        <View style={styles.statCard}>
-          <Heart size={24} color="#e74c3c" />
-          <Text style={styles.statNumber}>120+</Text>
-          <Text style={styles.statLabel}>Lives Saved</Text>
-        </View>
-        <View style={styles.statCard}>
-          <Users size={24} color="#3498db" />
-          <Text style={styles.statNumber}>450+</Text>
-          <Text style={styles.statLabel}>Active Donors</Text>
-        </View>
-        <View style={styles.statCard}>
-          <Award size={24} color="#f39c12" />
-          <Text style={styles.statNumber}>98%</Text>
-          <Text style={styles.statLabel}>Success Rate</Text>
-        </View>
+      <View className="flex-row justify-between px-5 mb-6">
+        <StatCard
+          icon={<Heart size={24} color="#e74c3c" />}
+          number="120+"
+          label="Lives Saved"
+        />
+        <StatCard
+          icon={<Users size={24} color="#3498db" />}
+          number="450+"
+          label="Active Donors"
+        />
+        <StatCard
+          icon={<Award size={24} color="#f39c12" />}
+          number="98%"
+          label="Success Rate"
+        />
       </View>
 
       {/* Recent Requests */}
-      <View style={styles.sectionContainer}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Recent Requests</Text>
+      <View className="mb-6">
+        <View className="flex-row justify-between items-center px-5 mb-4">
+          <Text className="text-lg font-semibold text-gray-800">
+            Recent Requests
+          </Text>
           <TouchableOpacity>
-            <Text style={styles.seeAllText}>See All</Text>
+            <Text className="text-sm font-medium text-red-500">See All</Text>
           </TouchableOpacity>
         </View>
-        
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.requestsScroll}>
+
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          className="pl-5">
           {[1, 2, 3].map((item) => (
-            <View key={item} style={styles.requestCard}>
-              <View style={styles.requestHeader}>
-                <View style={styles.bloodTypeTag}>
-                  <Text style={styles.bloodTypeText}>A+</Text>
-                </View>
-                <Text style={styles.urgentTag}>Urgent</Text>
-              </View>
-              <Text style={styles.requestTitle}>Kidney Needed</Text>
-              <Text style={styles.requestLocation}>City Hospital, New York</Text>
-              <Text style={styles.requestTime}>Posted 2 hours ago</Text>
-              <TouchableOpacity style={styles.requestButton}>
-                <Text style={styles.requestButtonText}>View Details</Text>
-              </TouchableOpacity>
-            </View>
+            <RequestCard
+              key={item}
+              bloodType="A+"
+              urgency="Urgent"
+              title="Kidney Needed"
+              location="City Hospital, New York"
+              timePosted="Posted 2 hours ago"
+            />
           ))}
         </ScrollView>
       </View>
-
     </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  welcomeSection: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-    
-  },
-  welcomeText: {
-    marginTop:20,
-    padding:5,
-    fontFamily: 'Inter-Bold',
-    fontSize: 22,
-    color: '#333',
-  },
-  welcomeSubtext: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 14,
-    color: '#666',
-    marginTop: 5,
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    marginBottom: 25,
-  },
-  statCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 15,
-    alignItems: 'center',
-    width: '30%',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  statNumber: {
-    fontFamily: 'Inter-Bold',
-    fontSize: 18,
-    color: '#333',
-    marginTop: 8,
-  },
-  statLabel: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 12,
-    color: '#666',
-    marginTop: 4,
-  },
-  sectionContainer: {
-    marginBottom: 25,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    marginBottom: 15,
-  },
-  sectionTitle: {
-    fontFamily: 'Inter-SemiBold',
-    fontSize: 18,
-    color: '#333',
-  },
-  seeAllText: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 14,
-    color: '#E8315B',
-  },
-  requestsScroll: {
-    paddingLeft: 20,
-  },
-  requestCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 15,
-    marginRight: 15,
-    width: 250,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  requestHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  bloodTypeTag: {
-    backgroundColor: '#e3f2fd',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 4,
-  },
-  bloodTypeText: {
-    fontFamily: 'Inter-SemiBold',
-    fontSize: 12,
-    color: '#E8315B',
-  },
-  urgentTag: {
-    fontFamily: 'Inter-SemiBold',
-    fontSize: 12,
-    color: '#e74c3c',
-  },
-  requestTitle: {
-    fontFamily: 'Inter-SemiBold',
-    fontSize: 16,
-    color: '#333',
-    marginBottom: 5,
-  },
-  requestLocation: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 5,
-  },
-  requestTime: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 12,
-    color: '#999',
-    marginBottom: 15,
-  },
-  requestButton: {
-    backgroundColor: '#E8315B',
-    borderRadius: 6,
-    paddingVertical: 8,
-    alignItems: 'center',
-  },
-  requestButtonText: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 14,
-    color: '#fff',
-  },
-});
+const StatCard: React.FC<StatCardProps> = ({ icon, number, label }) => (
+  <View className="bg-white rounded-xl p-4 items-center w-[30%] shadow-md">
+    {icon}
+    <Text className="mt-2 text-lg font-bold text-gray-800">{number}</Text>
+    <Text className="mt-1 text-xs text-gray-600">{label}</Text>
+  </View>
+);
+
+const RequestCard: React.FC<RequestCardProps> = ({
+  bloodType,
+  urgency,
+  title,
+  location,
+  timePosted,
+}) => (
+  <View className="bg-white rounded-xl p-4 mr-4 w-60 shadow-md">
+    <View className="flex-row justify-between mb-2">
+      <View className="bg-blue-100 px-3 py-1 rounded-md">
+        <Text className="text-xs font-semibold text-red-500">{bloodType}</Text>
+      </View>
+      <Text className="text-xs font-semibold text-red-500">{urgency}</Text>
+    </View>
+    <Text className="text-base font-semibold text-gray-800 mb-1">{title}</Text>
+    <Text className="text-sm text-gray-600 mb-1">{location}</Text>
+    <Text className="text-xs text-gray-500 mb-3">{timePosted}</Text>
+    <TouchableOpacity className="bg-primary rounded-md py-2 items-center">
+      <Text className="text-white text-sm font-medium">View Details</Text>
+    </TouchableOpacity>
+  </View>
+);
