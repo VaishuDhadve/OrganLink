@@ -17,25 +17,42 @@ import {
   Award,
   Heart,
 } from "lucide-react-native";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
+import { signOut } from "firebase/auth";
+import { useAuth } from "@/hooks/useAuth";
 
 const ProfileScreen = () => {
+  const { user, userData, logout } = useAuth();
+
+  const handleLogout = async () => {
+    const { success } = await logout();
+    if (success) {
+      router.replace("/auth/login");
+    }
+  };
   return (
     <ScrollView className="flex-1 bg-gray-100">
       {/* Profile Header */}
-      <View className="flex-row items-center bg-white p-5 border-b border-gray-200">
-        <Image
+      <View className="flex-row items-center  bg-white p-5 border-b border-gray-200">
+        {/* <Image
           source={{
             uri: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
           }}
           className="w-20 h-20 rounded-full"
-        />
+        /> */}
+        <Text className="bg-primary rounded-full text-white text-center text-6xl pt-3 w-20 h-20">
+          {userData?.email[0]}
+        </Text>
         <View className="ml-5 flex-1">
-          <Text className="text-lg font-bold text-gray-800">John Doe</Text>
-          <Text className="text-sm text-gray-600">john.doe@example.com</Text>
+          <Text className="text-lg font-bold text-gray-800">
+            {userData?.fullName}
+          </Text>
+          <Text className="text-sm text-gray-600">{userData?.email}</Text>
           <View className="bg-red-500 flex-row items-center px-3 py-1 rounded-lg self-start mt-2">
             <Heart size={14} color="#fff" />
-            <Text className="text-white text-xs ml-2">Registered Donor</Text>
+            <Text className="text-white text-xs ml-2">
+              {userData?.isDonor ? "Registered Donar" : "Not Donated"}
+            </Text>
           </View>
         </View>
       </View>
@@ -126,11 +143,13 @@ const ProfileScreen = () => {
       />
 
       {/* Logout */}
-      <TouchableOpacity className="flex-row items-center justify-center bg-white m-4 p-4 rounded-lg shadow">
-        <Link href="../auth/login" className="flex-row items-center">
+      <TouchableOpacity
+        onPress={handleLogout}
+        className="flex-row items-center justify-center bg-white m-4 p-4 rounded-lg shadow">
+        <View className="flex-row items-center">
           <LogOut size={20} color="#e74c3c" className="mr-2" />
           <Text className="text-red-500 font-medium">Logout</Text>
-        </Link>
+        </View>
       </TouchableOpacity>
 
       <View className="items-center mb-6">

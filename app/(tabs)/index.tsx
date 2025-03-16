@@ -1,5 +1,6 @@
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { Bell, Heart, Users, Award } from "lucide-react-native";
+import { useAuth } from "@/hooks/useAuth";
 
 type StatCardProps = {
   icon: JSX.Element;
@@ -16,12 +17,13 @@ type RequestCardProps = {
 };
 
 export default function HomeScreen() {
+  const { userData } = useAuth();
   return (
     <ScrollView className="flex-1 bg-gray-100">
       {/* Welcome Section */}
       <View className="px-5 my-5">
         <Text className="mt-5 text-xl font-bold text-gray-800">
-          Welcome back, John!
+          Welcome back, {userData?.fullName.split(" ")[0]}
         </Text>
         <Text className="mt-1 text-sm text-gray-600">
           Thank you for being a part of saving lives.

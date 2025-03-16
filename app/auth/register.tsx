@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { router } from "expo-router";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebaseConfig"; // Import Firebase config
+import { useAuth } from "@/hooks/useAuth";
 
 interface InputFieldProps {
   label: string;
@@ -34,8 +33,10 @@ const InputField: React.FC<InputFieldProps> = ({
 const CreateAccountScreen: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const { register } = useAuth();
 
   // Handle Email Registration
   const handleRegister = async () => {
@@ -44,12 +45,13 @@ const CreateAccountScreen: React.FC = () => {
       return;
     }
 
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
+    const { success, error } = await register(email, password, fullName);
+
+    if (success) {
       Alert.alert("Success", "Account created successfully!");
-      router.replace("/(tabs)");
-    } catch (error: any) {
-      Alert.alert("Registration Error", error.message);
+      router.replace("/(tabs)"); // Navigate to home screen
+    } else {
+      Alert.alert("Registration Error", error);
     }
   };
 
@@ -60,6 +62,7 @@ const CreateAccountScreen: React.FC = () => {
         Create An Account
       </Text>
 
+      <InputField label="Full name" value={fullName} onChange={setFullName} />
       <InputField label="E-mail" value={email} onChange={setEmail} />
 
       <View className="mb-4">

@@ -2,11 +2,17 @@ import React from "react";
 import { View, Text, Image, TouchableOpacity, Dimensions } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import Svg, { Path } from "react-native-svg";
-import { router } from "expo-router";
+import { Redirect, router } from "expo-router";
+import { useAuth } from "@/hooks/useAuth";
 
 const { width } = Dimensions.get("window");
 
 const WelcomeScreen: React.FC = () => {
+  const { user } = useAuth();
+  if (user) {
+    return <Redirect href="/(tabs)" />;
+  }
+
   return (
     <View className="flex-1 bg-white items-center justify-between">
       <StatusBar style="auto" />

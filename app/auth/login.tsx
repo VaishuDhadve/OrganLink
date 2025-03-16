@@ -2,15 +2,14 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { router } from "expo-router";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebaseConfig"; // Ensure correct path to Firebase setup
+import { useAuth } from "@/hooks/useAuth";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  const { login } = useAuth();
   const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert("Error", "Please enter both email and password");
@@ -18,17 +17,15 @@ const LoginScreen = () => {
     }
 
     setLoading(true);
-    try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+
+    const { success } = await login(email, password);
+    if (success) {
       Alert.alert("Success", "Logged in successfully!");
       router.replace("/(tabs)"); // Navigate to home screen
-    } catch (error: any) {
-      Alert.alert("Login Failed", error.message);
+    } else {
+      Alert.alert("Login Failed", "Something wents wrong");
     }
+
     setLoading(false);
   };
 
