@@ -57,6 +57,7 @@ const ProfileScreen = () => {
           </View>
         </View>
       </View>
+      
 
       {/* Donor Status */}
       <View className="bg-white m-4 p-4 rounded-lg shadow">
