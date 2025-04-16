@@ -7,7 +7,7 @@ import {
   signOut,
 } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
-import { auth, db } from "../firebaseConfig";
+import { auth, db } from "../FirebaseConfig";
 
 export interface UserData {
   id: string;

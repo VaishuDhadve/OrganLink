@@ -17,12 +17,13 @@ import {
   Award,
   Heart,
 } from "lucide-react-native";
-import { Link, router } from "expo-router";
+import { Link, router, useNavigation, useRouter } from "expo-router";
 import { signOut } from "firebase/auth";
 import { useAuth } from "@/hooks/useAuth";
 
 const ProfileScreen = () => {
   const { user, userData, logout } = useAuth();
+  const router = useRouter();
 
   const handleLogout = async () => {
     const { success } = await logout();
@@ -77,7 +78,7 @@ const ProfileScreen = () => {
             </View>
           ))}
         </View>
-        <TouchableOpacity className="bg-blue-100 rounded-md py-2 mt-3 items-center">
+        <TouchableOpacity onPress={() => router.push('../profile/update_donar')} className="bg-blue-100 rounded-md py-2 mt-3 items-center">
           <Text className="text-red-500 font-medium">
             Update Donor Information
           </Text>
