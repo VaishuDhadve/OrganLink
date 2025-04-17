@@ -1,6 +1,7 @@
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { Bell, Heart, Users, Award } from "lucide-react-native";
 import { useAuth } from "@/hooks/useAuth";
+import { useRequests } from "@/hooks/useRequests";
 
 type StatCardProps = {
   icon: JSX.Element;
@@ -18,6 +19,8 @@ type RequestCardProps = {
 
 export default function HomeScreen() {
   const { userData } = useAuth();
+const {requests} = useRequests()
+
   return (
     <ScrollView className="flex-1 bg-gray-100">
       {/* Welcome Section */}
@@ -61,16 +64,15 @@ export default function HomeScreen() {
         </View>
 
         <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
           className="pl-5">
-          {[1, 2, 3].map((item) => (
+          {requests.map((req,index) => (
             <RequestCard
-              key={item}
-              bloodType="A+"
-              urgency="Urgent"
-              title="Kidney Needed"
-              location="City Hospital, New York"
+              key={index}
+              bloodType={req.bloodType}
+              urgency={req.urgencyLevel}
+              title={req.organType + " Needed"}
+              location={req.hospitalAddress}
               timePosted="Posted 2 hours ago"
             />
           ))}
@@ -95,7 +97,7 @@ const RequestCard: React.FC<RequestCardProps> = ({
   location,
   timePosted,
 }) => (
-  <View className="bg-white rounded-xl p-4 mr-4 w-60 shadow-md">
+  <View className="bg-white rounded-xl p-6  shadow-md">
     <View className="flex-row justify-between mb-2">
       <View className="bg-blue-100 px-3 py-1 rounded-md">
         <Text className="text-xs font-semibold text-red-500">{bloodType}</Text>

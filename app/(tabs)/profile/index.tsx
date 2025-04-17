@@ -35,12 +35,7 @@ const ProfileScreen = () => {
     <ScrollView className="flex-1 bg-gray-100">
       {/* Profile Header */}
       <View className="flex-row items-center  bg-white p-5 border-b border-gray-200">
-        {/* <Image
-          source={{
-            uri: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
-          }}
-          className="w-20 h-20 rounded-full"
-        /> */}
+        
         <Text className="bg-primary rounded-full text-white text-center text-6xl pt-3 w-20 h-20">
           {userData?.email[0]}
         </Text>

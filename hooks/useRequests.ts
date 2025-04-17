@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import {
   collection,
   query,
@@ -7,9 +7,9 @@ import {
   addDoc,
   updateDoc,
   doc,
-  where,
 } from "firebase/firestore";
-import { db } from "../firebaseConfig";
+import { db } from "../FirebaseConfig";
+import { useAuth } from "./useAuth";
 
 export interface OrganRequest {
   id: string;
@@ -28,82 +28,104 @@ export interface OrganRequest {
   createdAt: number;
 }
 
+interface RequestFilters {
+  bloodType?: string;
+  organType?: string;
+  searchQuery?: string;
+}
+
 export function useRequests() {
+const {userData} = useAuth()
+
   const [requests, setRequests] = useState<OrganRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const q = query(collection(db, "requests"), orderBy("createdAt", "desc"));
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const requestsData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as OrganRequest[];
-
-      setRequests(requestsData);
-      setLoading(false);
-    });
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const data = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as OrganRequest[];
+        setRequests(data);
+        setLoading(false);
+      },
+      (err) => {
+        setError(err.message);
+        setLoading(false);
+      }
+    );
 
     return unsubscribe;
   }, []);
 
-  const createRequest = async (
-    requestData: Omit<OrganRequest, "id" | "createdAt" | "status">
-  ) => {
-    try {
-      const docRef = await addDoc(collection(db, "requests"), {
-        ...requestData,
-        status: "pending",
-        createdAt: Date.now(),
+  const createRequest = useCallback(
+    async (
+      requestData: Omit<OrganRequest, "id" | "createdAt" | "status" | "userId">
+    ) => {
+      try {
+        const docRef = await addDoc(collection(db, "requests"), {
+          ...requestData,
+          userId: userData?.email,
+          status: "pending",
+          createdAt: Date.now(),
+        });
+        return { success: true, id: docRef.id };
+      } catch (err: any) {
+        return { success: false, error: err.message };
+      }
+    },
+    []
+  );
+
+  const updateRequest = useCallback(
+    async (
+      requestId: string,
+      data: Partial<OrganRequest>
+    ): Promise<{ success: boolean; error?: string }> => {
+      try {
+        await updateDoc(doc(db, "requests", requestId), data);
+        return { success: true };
+      } catch (err: any) {
+        return { success: false, error: err.message };
+      }
+    },
+    []
+  );
+
+  const getUserRequests = useCallback(
+    (userId: string): OrganRequest[] =>
+      requests.filter((r) => r.userId === userId),
+    [requests]
+  );
+
+  const getFilteredRequests = useCallback(
+    ({ bloodType, organType, searchQuery }: RequestFilters): OrganRequest[] => {
+      return requests.filter((request) => {
+        const matchesBlood = !bloodType || request.bloodType === bloodType;
+        const matchesOrgan = !organType || request.organType === organType;
+        const matchesSearch =
+          !searchQuery ||
+          request.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          request.hospitalName
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase());
+        return matchesBlood && matchesOrgan && matchesSearch;
       });
+    },
+    [requests]
+  );
 
-      return { success: true, id: docRef.id };
-    } catch (error: any) {
-      return { success: false, error: error.message };
-    }
-  };
-
-  const updateRequest = async (
-    requestId: string,
-    data: Partial<OrganRequest>
-  ) => {
-    try {
-      await updateDoc(doc(db, "requests", requestId), data);
-      return { success: true };
-    } catch (error: any) {
-      return { success: false, error: error.message };
-    }
-  };
-
-  const getUserRequests = (userId: string) => {
-    return requests.filter((request) => request.userId === userId);
-  };
-
-  const getFilteredRequests = ({
-    bloodType,
-    organType,
-    searchQuery,
-  }: {
-    bloodType?: string;
-    organType?: string;
-    searchQuery?: string;
-  }) => {
-    return requests.filter((request) => {
-      const matchesBloodType = !bloodType || request.bloodType === bloodType;
-      const matchesOrganType = !organType || request.organType === organType;
-      const matchesSearch =
-        !searchQuery ||
-        request.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        request.hospitalName.toLowerCase().includes(searchQuery.toLowerCase());
-
-      return matchesBloodType && matchesOrganType && matchesSearch;
-    });
-  };
+  const memoizedRequests = useMemo(() => requests, [requests]);
 
   return {
-    requests,
+    requests: memoizedRequests,
     loading,
+    error,
     createRequest,
     updateRequest,
     getUserRequests,
