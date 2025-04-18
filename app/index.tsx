@@ -10,7 +10,7 @@ const { width } = Dimensions.get("window");
 const WelcomeScreen: React.FC = () => {
   const { user } = useAuth();
   if (user) {
-    return <Redirect href="/(tabs)" />;
+    return <Redirect href="/(tabs)/(home)" />;
   }
 
   return (

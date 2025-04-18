@@ -5,7 +5,7 @@ const { width } = Dimensions.get("window");
 
 const images = [
   require("@/assets/images/sliderImg1.png"),
-  require("@/assets/images/sliderImg1.png"),
+  require("@/assets/images/sliderImg2.png"),
   require("@/assets/images/sliderImg1.png"),
 ];
 
@@ -40,7 +40,7 @@ const ImageSlider = () => {
         className="mx-5"
         scrollEventThrottle={16}>
         {images.map((img, index) => (
-          <View key={index} className="rounded-md">
+          <View key={index} className="rounded-md mx-1">
             <Image
               source={img}
               style={{ width: width - 40, height: 220, borderRadius: 12 }}
