@@ -15,7 +15,9 @@ export const RequestCard: React.FC<RequestCardProps> = ({
   location,
   timePosted,
 }) => (
-  <View className="bg-white rounded-xl p-6 w-60 shadow-md mx-1">
+  <View
+    style={{ marginHorizontal: 5, width: 150 }}
+    className="bg-white rounded-xl p-4 w-60 shadow-md ">
     <View className="flex-row justify-between mb-2">
       <View className="bg-blue-100 px-3 py-1 rounded-md">
         <Text className="text-xs font-semibold text-red-500">{bloodType}</Text>

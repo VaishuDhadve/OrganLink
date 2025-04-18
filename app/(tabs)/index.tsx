@@ -1,8 +1,9 @@
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Image } from "react-native";
 import { Bell, Heart, Users, Award } from "lucide-react-native";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequests } from "@/hooks/useRequests";
 import { RequestCard } from "@/components/RequestCard";
+import ImageSlider from "@/components/ImageSlider";
 
 type StatCardProps = {
   icon: JSX.Element;
@@ -59,7 +60,7 @@ export default function HomeScreen() {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          className="p-5">
+          className="px-5">
           {requests.map((req, index) => (
             <RequestCard
               key={index}
@@ -72,6 +73,8 @@ export default function HomeScreen() {
           ))}
         </ScrollView>
       </View>
+
+      <ImageSlider />
     </ScrollView>
   );
 }
