@@ -64,6 +64,7 @@ export default function HomeScreen() {
           {requests.map((req, index) => (
             <RequestCard
               key={index}
+              requestData={req}
               bloodType={req.bloodType}
               urgency={req.urgencyLevel}
               title={req.organType + " Needed"}

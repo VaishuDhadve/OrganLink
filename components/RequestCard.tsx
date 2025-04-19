@@ -1,6 +1,8 @@
 import { Text, TouchableOpacity, View } from "react-native";
+import { Link } from "expo-router";
 
 type RequestCardProps = {
+  requestData: object;
   bloodType: string;
   urgency: string;
   title: string;
@@ -9,6 +11,7 @@ type RequestCardProps = {
 };
 
 export const RequestCard: React.FC<RequestCardProps> = ({
+  requestData,
   bloodType,
   urgency,
   title,
@@ -26,7 +29,13 @@ export const RequestCard: React.FC<RequestCardProps> = ({
     <Text className="text-sm text-gray-600 mb-1">{location}</Text>
     <Text className="text-xs text-gray-500 mb-3">{timePosted}</Text>
     <TouchableOpacity className="bg-primary rounded-md py-2 items-center">
-      <Text className="text-white text-sm font-medium">View Details</Text>
+      <Link
+        href={{
+          pathname: "/details/[request]",
+          params: { request: JSON.stringify(requestData) },
+        }}>
+        <Text className="text-white text-sm font-medium">View Details</Text>
+      </Link>
     </TouchableOpacity>
   </View>
 );

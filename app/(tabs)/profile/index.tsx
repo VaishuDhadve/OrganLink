@@ -35,9 +35,8 @@ const ProfileScreen = () => {
     <ScrollView className="flex-1 bg-gray-100">
       {/* Profile Header */}
       <View className="flex-row items-center  bg-white p-5 border-b border-gray-200">
-        
         <Text className="bg-primary rounded-full text-white text-center text-6xl pt-3 w-20 h-20">
-          {userData?.email[0]}
+          {userData?.fullName[0]}
         </Text>
         <View className="ml-5 flex-1">
           <Text className="text-lg font-bold text-gray-800">
@@ -52,7 +51,6 @@ const ProfileScreen = () => {
           </View>
         </View>
       </View>
-      
 
       {/* Donor Status */}
       <View className="bg-white m-4 p-4 rounded-lg shadow">
@@ -74,7 +72,9 @@ const ProfileScreen = () => {
             </View>
           ))}
         </View>
-        <TouchableOpacity onPress={() => router.push('../profile/update_donar')} className="bg-blue-100 rounded-md py-2 mt-3 items-center">
+        <TouchableOpacity
+          onPress={() => router.push("../profile/update_donar")}
+          className="bg-blue-100 rounded-md py-2 mt-3 items-center">
           <Text className="text-red-500 font-medium">
             Update Donor Information
           </Text>
