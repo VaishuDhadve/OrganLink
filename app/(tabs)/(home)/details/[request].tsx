@@ -33,20 +33,18 @@ export default function Details() {
 
   return (
     <ScrollView className="flex-1 bg-white p-4">
-      <Text className="text-2xl font-bold text-primary mb-4">
-        Request Details
-      </Text>
-
-      {Object.entries(requestData).map(([key, value]) => (
-        <View
-          key={key}
-          className="flex flex-row items-center justify-between mb-3 bg-gray-100 rounded-xl p-4 shadow-sm">
-          <Text className="text-gray-700 uppercase text-xs font-semibold">
-            {key}
+      <View className=" h-48 w-full flex-1 rounded-md bg-background  justify-center items-center">
+        <Text className="bg-primary mt-8 rounded-full text-white text-center text-6xl pt-3 w-20 h-20">
+          {requestData?.fullName[0]}
+        </Text>
+        <View className="flex-1">
+          <Text className="text-lg font-bold text-gray-800">
+            {requestData?.fullName}
           </Text>
-          <Text className="text-lg text-black mt-1">{String(value)}</Text>
+          <Text className="text-sm text-gray-600">{requestData?.age}</Text>
+          
         </View>
-      ))}
+      </View>
     </ScrollView>
   );
 }
