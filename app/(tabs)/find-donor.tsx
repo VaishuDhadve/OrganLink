@@ -5,20 +5,11 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  Image,
+  ActivityIndicator,
 } from "react-native";
-import { Search, Filter, MapPin, Clock } from "lucide-react-native";
-
-interface Donor {
-  id: number;
-  name: string;
-  age: number;
-  bloodType: string;
-  organ: string;
-  location: string;
-  distance: string;
-  image: string;
-}
+import { Search, Filter, MapPin, Clock, Heart } from "lucide-react-native";
+import { useDonors } from "@/hooks/useDonars";
+import { Link } from "expo-router";
 
 const bloodTypes = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 const organTypes = [
@@ -30,189 +21,204 @@ const organTypes = [
   "Bone Marrow",
 ];
 
-const donors: Donor[] = [
-  {
-    id: 1,
-    name: "David Wilson",
-    age: 32,
-    bloodType: "O+",
-    organ: "Kidney",
-    location: "New York, NY",
-    distance: "2.5 miles",
-    image:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
-  },
-  {
-    id: 2,
-    name: "Emma Johnson",
-    age: 28,
-    bloodType: "A+",
-    organ: "Liver",
-    location: "Brooklyn, NY",
-    distance: "4.2 miles",
-    image:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
-  },
-  {
-    id: 3,
-    name: "Michael Brown",
-    age: 45,
-    bloodType: "B-",
-    organ: "Bone Marrow",
-    location: "Queens, NY",
-    distance: "6.8 miles",
-    image:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
-  },
-  {
-    id: 4,
-    name: "Sophia Martinez",
-    age: 35,
-    bloodType: "AB+",
-    organ: "Cornea",
-    location: "Manhattan, NY",
-    distance: "1.3 miles",
-    image:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
-  },
-];
-
 export default function FindDonorScreen() {
+  const { donors, loading } = useDonors();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedBloodType, setSelectedBloodType] = useState<string | null>(
     null
   );
   const [selectedOrgan, setSelectedOrgan] = useState<string | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
 
   const filteredDonors = donors.filter((donor) => {
+    const matchesBloodType =
+      !selectedBloodType || donor.bloodType === selectedBloodType;
+    const matchesOrgan =
+      !selectedOrgan || donor.availableOrgans.includes(selectedOrgan);
+    const matchesSearch =
+      !searchQuery ||
+      donor.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      donor.location.toLowerCase().includes(searchQuery.toLowerCase());
+
     return (
-      (!selectedBloodType || donor.bloodType === selectedBloodType) &&
-      (!selectedOrgan || donor.organ === selectedOrgan) &&
-      (!searchQuery ||
-        donor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        donor.location.toLowerCase().includes(searchQuery.toLowerCase()))
+      matchesBloodType &&
+      matchesOrgan &&
+      matchesSearch &&
+      donor.status === "available"
     );
   });
 
   return (
     <View className="flex-1 bg-gray-100">
+      {/* Search Header */}
       <View className="bg-white px-5 py-4 border-b border-gray-200">
-        <View className="flex-row items-center bg-gray-200 rounded-lg px-3">
-          <Search size={20} color="#f0f0f0" className="mr-2" />
+        <View className="flex-row items-center bg-gray-100 rounded-lg px-4 py-2">
+          <Search size={20} color="#666666" />
           <TextInput
-            className="flex-1 h-10"
+            className="flex-1 ml-2 text-base text-gray-800"
             placeholder="Search by name or location"
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
-          <TouchableOpacity>
-            <Filter size={20} color="#1a5276" />
+          <TouchableOpacity onPress={() => setShowFilters(!showFilters)}>
+            <Filter size={20} color={showFilters ? "#E8315B" : "#666666"} />
           </TouchableOpacity>
         </View>
       </View>
 
-      <View className="bg-white py-4 border-b border-gray-200">
-        <Text className="text-sm font-semibold text-gray-700 px-5 mb-2">
-          Blood Type
-        </Text>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          className="pl-5 mb-2">
-          {bloodTypes.map((type) => (
-            <TouchableOpacity
-              key={type}
-              className={`px-4 py-2 rounded-full mr-2 ${
-                selectedBloodType === type ? "bg-blue-700" : "bg-gray-100"
-              }`}
-              onPress={() =>
-                setSelectedBloodType(selectedBloodType === type ? null : type)
-              }>
-              <Text
-                className={`text-sm font-medium ${
-                  selectedBloodType === type ? "text-white" : "text-gray-600"
-                }`}>
-                {type}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-        <Text className="text-sm font-semibold text-gray-700 px-5 mb-2">
-          Organ Type
-        </Text>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          className="pl-5 mb-2">
-          {organTypes.map((organ) => (
-            <TouchableOpacity
-              key={organ}
-              className={`px-4 py-2 rounded-full mr-2 ${
-                selectedOrgan === organ ? "bg-blue-700" : "bg-gray-100"
-              }`}
-              onPress={() =>
-                setSelectedOrgan(selectedOrgan === organ ? null : organ)
-              }>
-              <Text
-                className={`text-sm font-medium ${
-                  selectedOrgan === organ ? "text-white" : "text-gray-600"
-                }`}>
-                {organ}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
+      {/* Filters */}
+      {showFilters && (
+        <View className="bg-white px-5 py-4 border-b border-gray-200">
+          <Text className="text-sm font-semibold text-gray-700 mb-2">
+            Blood Type
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            className="mb-4"
+          >
+            {bloodTypes.map((type) => (
+              <TouchableOpacity
+                key={type}
+                className={`px-4 py-2 rounded-full mr-2 ${
+                  selectedBloodType === type ? "bg-[#E8315B]" : "bg-gray-100"
+                }`}
+                onPress={() =>
+                  setSelectedBloodType(selectedBloodType === type ? null : type)
+                }
+              >
+                <Text
+                  className={`text-sm font-medium ${
+                    selectedBloodType === type ? "text-white" : "text-gray-600"
+                  }`}
+                >
+                  {type}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
 
-      <Text className="text-sm font-medium text-gray-600 m-5">
-        {filteredDonors.length} donor{filteredDonors.length !== 1 ? "s" : ""}{" "}
-        found
-      </Text>
+          <Text className="text-sm font-semibold text-gray-700 mb-2">
+            Organ Type
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            className="mb-2"
+          >
+            {organTypes.map((organ) => (
+              <TouchableOpacity
+                key={organ}
+                className={`px-4 py-2 rounded-full mr-2 ${
+                  selectedOrgan === organ ? "bg-[#E8315B]" : "bg-gray-100"
+                }`}
+                onPress={() =>
+                  setSelectedOrgan(selectedOrgan === organ ? null : organ)
+                }
+              >
+                <Text
+                  className={`text-sm font-medium ${
+                    selectedOrgan === organ ? "text-white" : "text-gray-600"
+                  }`}
+                >
+                  {organ}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+      )}
 
-      <ScrollView className="px-5">
-        {filteredDonors.map((donor) => (
-          <View
-            key={donor.id}
-            className="bg-white rounded-lg p-4 mb-3 flex-row shadow-sm">
-            <Image
-              source={{ uri: donor.image }}
-              className="w-16 h-16 rounded-full"
-            />
-            <View className="ml-4 flex-1">
-              <Text className="text-lg font-semibold text-gray-900">
-                {donor.name}, {donor.age}
-              </Text>
-              <View className="flex-row space-x-2 mt-1">
-                <View className="bg-blue-100 rounded px-2 py-1">
-                  <Text className="text-xs font-medium text-blue-800">
-                    {donor.bloodType}
+      {/* Results */}
+      {loading ? (
+        <View className="flex-1 justify-center items-center">
+          <ActivityIndicator size="large" color="#E8315B" />
+        </View>
+      ) : (
+        <ScrollView className="flex-1 px-5 pt-4">
+          <Text className="text-sm font-medium text-gray-600 mb-4">
+            {filteredDonors.length} donor
+            {filteredDonors.length !== 1 ? "s" : ""} found
+          </Text>
+
+          {filteredDonors.map((donor, index) => (
+            <View
+              key={donor.id}
+              className="bg-white rounded-lg p-4 mb-3 shadow-sm"
+            >
+              <View className="flex-row justify-between items-start">
+                <View className="flex-1">
+                  <Text className="text-lg font-semibold text-gray-900">
+                    {donor.fullName}
                   </Text>
+                  <View className="flex-row space-x-2 mt-2">
+                    <View className="bg-red-100 rounded-full px-3 py-1">
+                      <Text className="text-xs font-medium text-red-800">
+                        {donor.bloodType}
+                      </Text>
+                    </View>
+                    {donor.availableOrgans.map((organ, idx) => (
+                      <View
+                        key={idx}
+                        className="bg-blue-100 rounded-full px-3 py-1"
+                      >
+                        <Text className="text-xs font-medium text-blue-800">
+                          {organ}
+                        </Text>
+                      </View>
+                    ))}
+                  </View>
                 </View>
-                <View className="bg-green-100 rounded px-2 py-1">
+                <View className="bg-green-100 px-3 py-1 rounded-full">
                   <Text className="text-xs font-medium text-green-800">
-                    {donor.organ}
+                    Available
                   </Text>
                 </View>
               </View>
-              <View className="flex-row items-center mt-1">
-                <MapPin size={14} color="#666" />
-                <Text className="text-xs text-gray-600 ml-1">
-                  {donor.location}
-                </Text>
+
+              <View className="mt-3">
+                <View className="flex-row items-center">
+                  <MapPin size={16} color="#666666" />
+                  <Text className="text-sm text-gray-600 ml-1">
+                    {donor.location}
+                  </Text>
+                </View>
+                {donor.lastCheckup && (
+                  <View className="flex-row items-center mt-1">
+                    <Clock size={16} color="#666666" />
+                    <Text className="text-sm text-gray-600 ml-1">
+                      Last checkup: {donor.lastCheckup}
+                    </Text>
+                  </View>
+                )}
               </View>
-              <View className="flex-row items-center mt-1">
-                <Clock size={14} color="#666" />
-                <Text className="text-xs text-gray-600 ml-1">
-                  {donor.distance}
+
+              <TouchableOpacity
+                className="bg-[#E8315B] rounded-lg py-3 mt-4"
+                onPress={() => {
+                  // Handle contact donor action
+                }}
+              >
+                <Text className="text-white text-center font-medium">
+                  Contact Donor
                 </Text>
-              </View>
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity className="bg-primary rounded px-3 py-2">
-              <Text className="text-white text-sm font-medium">Contact</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-      </ScrollView>
+          ))}
+
+          {filteredDonors.length === 0 && (
+            <View className="flex-1 justify-center items-center py-8">
+              <Heart size={48} color="#cccccc" />
+              <Text className="text-gray-500 text-center mt-4">
+                No donors found matching your criteria
+              </Text>
+              <Text className="text-gray-400 text-center mt-1">
+                Try adjusting your filters
+              </Text>
+            </View>
+          )}
+        </ScrollView>
+      )}
     </View>
   );
 }

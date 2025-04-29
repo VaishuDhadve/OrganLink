@@ -1,104 +1,222 @@
-import { View, Text, TextInput, ScrollView, Pressable } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { ScrollView, View, Text, TouchableOpacity, Alert } from "react-native";
+import { AlertCircle, Info } from "lucide-react-native";
+import { SelectOptions } from "@/components/SelectOptions";
+import { ToggleSwitch } from "@/components/ToggleSwitch";
+import { InputField } from "@/components/InputField";
+import { useAuth } from "@/hooks/useAuth";
+import { useDonors } from "@/hooks/useDonars";
 
-type Donor = {
-  id: number;
-  name: string;
-  age: number;
+export interface DonorFormData {
+  fullName: string;
   bloodType: string;
-  organ: string;
+  availableOrgans: string[];
   location: string;
-  distance: string;
-};
+  lastCheckup: string;
+  status: "available" | "unavailable";
+}
 
-const mockDonor: Donor = {
-  id: 1,
-  name: 'John Doe',
-  age: 30,
-  bloodType: 'O+',
-  organ: 'Kidney',
-  location: 'New York',
-  distance: '10km',
-};
+export default function UpdateDonorScreen() {
+  const { userData, updateUserData } = useAuth();
+  const { updateDonorProfile } = useDonors();
 
-export default function UpdateDonor() {
-  const [donor, setDonor] = useState<Donor>(mockDonor);
+  const [formData, setFormData] = useState<DonorFormData>({
+    fullName: userData?.fullName || "",
+    bloodType: userData?.bloodType || "",
+    availableOrgans: userData?.organs || [],
+    location: "",
+    lastCheckup: "",
+    status: "available",
+  });
 
-  const handleChange = (key: keyof Donor, value: string) => {
-    setDonor((prev) => ({
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  const organTypes = [
+    "Kidney",
+    "Liver",
+    "Heart",
+    "Lung",
+    "Cornea",
+    "Bone Marrow",
+  ];
+  const bloodTypes = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+
+  const handleChange = (key: keyof typeof formData, value: any) => {
+    setFormData((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const toggleOrgan = (organ: string) => {
+    setFormData((prev) => ({
       ...prev,
-      [key]: key === 'age' || key === 'id' ? Number(value) : value,
+      availableOrgans: prev.availableOrgans.includes(organ)
+        ? prev.availableOrgans.filter((o) => o !== organ)
+        : [...prev.availableOrgans, organ],
     }));
   };
 
-  const handleUpdate = () => {
-    console.log('Updated Donor Info:', donor);
-    alert('Donor information updated!');
+  const validateForm = () => {
+    const newErrors: any = {};
+    if (!formData.fullName) newErrors.fullName = "Full name is required";
+    if (!formData.bloodType) newErrors.bloodType = "Blood type is required";
+    if (formData.availableOrgans.length === 0)
+      newErrors.availableOrgans = "Please select at least one organ";
+    if (!formData.location) newErrors.location = "Location is required";
+    if (!formData.lastCheckup)
+      newErrors.lastCheckup = "Last checkup date is required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async () => {
+    if (validateForm()) {
+      try {
+        // Update user data with donor information
+        const userUpdateResult = await updateUserData({
+          ...formData,
+          isDonor: true,
+        });
+
+        if (!userUpdateResult.success) {
+          throw new Error(userUpdateResult.error);
+        }
+
+        // Update donor profile
+        const donorUpdateResult = await updateDonorProfile(userData!.id, {
+          ...formData,
+          totalDonations: 0, // Initialize for new donors
+        });
+
+        if (!donorUpdateResult.success) {
+          throw new Error(donorUpdateResult.error);
+        }
+
+        Alert.alert(
+          "Profile Updated",
+          "Your donor profile has been successfully updated.",
+          [{ text: "OK" }]
+        );
+      } catch (error: any) {
+        Alert.alert(
+          "Update Failed",
+          error.message || "Something went wrong. Please try again."
+        );
+      }
+    }
   };
 
   return (
-    <ScrollView className="p-5 bg-white">
-      <Text className="text-xl font-bold text-gray-900 mb-6">
-        Update Donor Information
-      </Text>
-
-      <Text className="text-sm text-gray-700">Name</Text>
-      <TextInput
-        value={donor.name}
-        onChangeText={(text) => handleChange('name', text)}
-        className="border border-gray-300 rounded-lg p-3 my-2"
-        placeholder="Enter name"
-      />
-
-      <Text className="text-sm text-gray-700">Age</Text>
-      <TextInput
-        value={donor.age.toString()}
-        onChangeText={(text) => handleChange('age', text)}
-        keyboardType="numeric"
-        className="border border-gray-300 rounded-lg p-3 my-2"
-        placeholder="Enter age"
-      />
-
-      <Text className="text-sm text-gray-700">Blood Type</Text>
-      <TextInput
-        value={donor.bloodType}
-        onChangeText={(text) => handleChange('bloodType', text)}
-        className="border border-gray-300 rounded-lg p-3 my-2"
-        placeholder="e.g. O+"
-      />
-
-      <Text className="text-sm text-gray-700">Organ</Text>
-      <TextInput
-        value={donor.organ}
-        onChangeText={(text) => handleChange('organ', text)}
-        className="border border-gray-300 rounded-lg p-3 my-2"
-        placeholder="e.g. Kidney"
-      />
-
-      <Text className="text-sm text-gray-700">Location</Text>
-      <TextInput
-        value={donor.location}
-        onChangeText={(text) => handleChange('location', text)}
-        className="border border-gray-300 rounded-lg p-3 my-2"
-        placeholder="e.g. New York"
-      />
-
-      <Text className="text-sm text-gray-700">Distance</Text>
-      <TextInput
-        value={donor.distance}
-        onChangeText={(text) => handleChange('distance', text)}
-        className="border border-gray-300 rounded-lg p-3 my-2"
-        placeholder="e.g. 10km"
-      />
-
-      <Pressable
-        className="bg-blue-600 rounded-lg p-4 mt-6"
-        onPress={handleUpdate}
-      >
-        <Text className="text-white text-center font-semibold text-base">
-          Update Donor
+    <ScrollView className="flex-1 bg-[#f5f5f5]">
+      {/* Alert Banner */}
+      <View className="bg-blue-50 p-4 flex-row items-center mb-4">
+        <AlertCircle size={24} color="#E8315B" />
+        <Text className="font-normal text-sm text-gray-800 ml-2 flex-1">
+          Update your donor profile to help save lives.
         </Text>
-      </Pressable>
+      </View>
+
+      {/* Form Body */}
+      <View className="px-5 pb-8">
+        <Text className="font-semibold text-lg text-[#E8315B] mb-4 mt-2">
+          Personal Information
+        </Text>
+
+        <InputField
+          label="Full Name"
+          value={formData.fullName}
+          onChangeText={(val) => handleChange("fullName", val)}
+          placeholder="Enter your full name"
+          error={errors.fullName}
+        />
+
+        <Text className="font-medium text-sm text-gray-800 mb-2 mt-5">
+          Blood Type
+        </Text>
+        <SelectOptions
+          options={bloodTypes}
+          selected={formData.bloodType}
+          onSelect={(val) => handleChange("bloodType", val)}
+        />
+        {errors.bloodType && (
+          <Text className="text-red-500 text-xs mt-1">{errors.bloodType}</Text>
+        )}
+
+        <Text className="font-medium text-sm text-gray-800 mb-2 mt-5">
+          Available Organs for Donation
+        </Text>
+        <View className="flex-row flex-wrap gap-2">
+          {organTypes.map((organ) => (
+            <TouchableOpacity
+              key={organ}
+              onPress={() => toggleOrgan(organ)}
+              className={`px-4 py-2 rounded-full border ${
+                formData.availableOrgans.includes(organ)
+                  ? "bg-[#E8315B] border-[#E8315B]"
+                  : "bg-white border-gray-300"
+              }`}
+            >
+              <Text
+                className={`text-sm ${
+                  formData.availableOrgans.includes(organ)
+                    ? "text-white"
+                    : "text-gray-700"
+                }`}
+              >
+                {organ}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+        {errors.availableOrgans && (
+          <Text className="text-red-500 text-xs mt-1">
+            {errors.availableOrgans}
+          </Text>
+        )}
+
+        <InputField
+          label="Location"
+          value={formData.location}
+          onChangeText={(val) => handleChange("location", val)}
+          placeholder="Enter your location"
+          error={errors.location}
+        />
+
+        <InputField
+          label="Last Medical Checkup"
+          value={formData.lastCheckup}
+          onChangeText={(val) => handleChange("lastCheckup", val)}
+          placeholder="YYYY-MM-DD"
+          error={errors.lastCheckup}
+        />
+
+        <ToggleSwitch
+          label="Available for Donation"
+          value={formData.status === "available"}
+          onToggle={(val) =>
+            handleChange("status", val ? "available" : "unavailable")
+          }
+          description="Toggle this if you are currently available for organ donation"
+        />
+
+        {/* Submit Button */}
+        <TouchableOpacity
+          onPress={handleSubmit}
+          className="bg-[#E8315B] rounded-lg py-4 mt-6"
+        >
+          <Text className="font-semibold text-base text-white text-center">
+            Update Donor Profile
+          </Text>
+        </TouchableOpacity>
+
+        {/* Footer Note */}
+        <View className="flex-row mt-5 p-4 bg-gray-50 rounded-lg border border-gray-100">
+          <Info size={16} color="#666" />
+          <Text className="text-xs text-gray-500 ml-2 flex-1">
+            By updating your donor profile, you agree to be contacted for
+            potential organ donation matches.
+          </Text>
+        </View>
+      </View>
     </ScrollView>
   );
 }

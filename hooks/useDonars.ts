@@ -7,7 +7,7 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
-import { db } from "../firebaseConfig";
+import { db } from "../FirebaseConfig";
 import type { UserData } from "./useAuth";
 
 export interface DonorProfile extends UserData {
