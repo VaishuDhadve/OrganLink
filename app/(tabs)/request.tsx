@@ -7,7 +7,6 @@ import { ToggleSwitch } from "@/components/ToggleSwitch";
 import { InputField } from "@/components/InputField";
 import { useRequests } from "@/hooks/useRequests";
 
-
 export interface OrganRequestFormData {
   fullName: string;
   age: string;
@@ -20,7 +19,6 @@ export interface OrganRequestFormData {
   isUrgent: boolean;
   additionalInfo?: string;
 }
-
 
 export default function RequestScreen() {
   const [formData, setFormData] = useState<OrganRequestFormData>({
@@ -37,9 +35,16 @@ export default function RequestScreen() {
   });
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-   const  {createRequest} = useRequests()
+  const { createRequest } = useRequests();
 
-  const organTypes = ["Kidney", "Liver", "Heart", "Lung", "Cornea", "Bone Marrow"];
+  const organTypes = [
+    "Kidney",
+    "Liver",
+    "Heart",
+    "Lung",
+    "Cornea",
+    "Bone Marrow",
+  ];
   const bloodTypes = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
   const handleChange = (key: keyof typeof formData, value: any) => {
@@ -50,10 +55,14 @@ export default function RequestScreen() {
     const newErrors: any = {};
     if (!formData.fullName) newErrors.fullName = "Full name is required";
     if (!formData.age) newErrors.age = "Age is required";
-    else if (isNaN(Number(formData.age))) newErrors.age = "Age must be a number";
-    if (!formData.contactNumber) newErrors.contactNumber = "Contact number is required";
-    if (!formData.hospitalName) newErrors.hospitalName = "Hospital name is required";
-    if (!formData.hospitalAddress) newErrors.hospitalAddress = "Hospital address is required";
+    else if (isNaN(Number(formData.age)))
+      newErrors.age = "Age must be a number";
+    if (!formData.contactNumber)
+      newErrors.contactNumber = "Contact number is required";
+    if (!formData.hospitalName)
+      newErrors.hospitalName = "Hospital name is required";
+    if (!formData.hospitalAddress)
+      newErrors.hospitalAddress = "Hospital address is required";
     if (!formData.organType) newErrors.organType = "Organ type is required";
     if (!formData.bloodType) newErrors.bloodType = "Blood type is required";
 
@@ -61,7 +70,7 @@ export default function RequestScreen() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async() => {
+  const handleSubmit = async () => {
     if (validateForm()) {
       const payload = {
         ...formData,
@@ -69,14 +78,13 @@ export default function RequestScreen() {
       };
       const { success, error } = await createRequest(payload as any); // Cast if needed
 
-
       if (success) {
         Alert.alert(
           "Request Submitted",
           "Your organ donation request has been successfully submitted.",
           [{ text: "OK" }]
         );
-  
+
         setFormData({
           fullName: "",
           age: "",
@@ -88,10 +96,12 @@ export default function RequestScreen() {
           urgencyLevel: "medium" as "low" | "medium" | "high",
           isUrgent: false,
           additionalInfo: "",
-        })
-
+        });
       } else {
-        Alert.alert("Submission Failed", error || "Something went wrong. Please try again.");
+        Alert.alert(
+          "Submission Failed",
+          error || "Something went wrong. Please try again."
+        );
         console.error("Submission failed", error);
       }
     }
@@ -103,13 +113,16 @@ export default function RequestScreen() {
       <View className="bg-blue-50 p-4 flex-row items-center mb-4">
         <AlertCircle size={24} color="#E8315B" />
         <Text className="font-normal text-sm text-gray-800 ml-2 flex-1">
-          Please fill out this form with accurate information to request an organ donation.
+          Please fill out this form with accurate information to request an
+          organ donation.
         </Text>
       </View>
 
       {/* Form Body */}
       <View className="px-5 pb-8">
-        <Text className="font-semibold text-lg text-[#E8315B] mb-4 mt-2">Personal Information</Text>
+        <Text className="font-semibold text-lg text-[#E8315B] mb-4 mt-2">
+          Personal Information
+        </Text>
         <InputField
           label="Full Name"
           value={formData.fullName}
@@ -134,7 +147,9 @@ export default function RequestScreen() {
           error={errors.contactNumber}
         />
 
-        <Text className="font-semibold text-lg text-[#E8315B] mb-4 mt-2">Hospital Information</Text>
+        <Text className="font-semibold text-lg text-[#E8315B] mb-4 mt-2">
+          Hospital Information
+        </Text>
         <InputField
           label="Hospital Name"
           value={formData.hospitalName}
@@ -151,25 +166,40 @@ export default function RequestScreen() {
           error={errors.hospitalAddress}
         />
 
-        <Text className="font-semibold text-lg text-[#E8315B] mb-4 mt-2">Organ Information</Text>
-        <Text className="font-medium text-sm text-gray-800 mb-2">Organ Type</Text>
+        <Text className="font-semibold text-lg text-[#E8315B] mb-4 mt-2">
+          Organ Information
+        </Text>
+        <Text className="font-medium text-sm text-gray-800 mb-2">
+          Organ Type
+        </Text>
         <SelectOptions
           options={organTypes}
           selected={formData.organType}
           onSelect={(val) => handleChange("organType", val)}
         />
-        {errors.organType && <Text className="text-red-500 text-xs mt-1">{errors.organType}</Text>}
+        {errors.organType && (
+          <Text className="text-red-500 text-xs mt-1">{errors.organType}</Text>
+        )}
 
-        <Text className="font-medium text-sm text-gray-800 mb-2 mt-5">Blood Type</Text>
+        <Text className="font-medium text-sm text-gray-800 mb-2 mt-5">
+          Blood Type
+        </Text>
         <SelectOptions
           options={bloodTypes}
           selected={formData.bloodType}
           onSelect={(val) => handleChange("bloodType", val)}
         />
-        {errors.bloodType && <Text className="text-red-500 text-xs mt-1">{errors.bloodType}</Text>}
+        {errors.bloodType && (
+          <Text className="text-red-500 text-xs mt-1">{errors.bloodType}</Text>
+        )}
 
-        <Text className="font-medium text-sm text-gray-800 mb-2 mt-5">Urgency Level</Text>
-        <UrgencySelector urgency={formData.urgencyLevel} onChange={(val) => handleChange("urgencyLevel", val)} />
+        <Text className="font-medium text-sm text-gray-800 mb-2 mt-5">
+          Urgency Level
+        </Text>
+        <UrgencySelector
+          urgency={formData.urgencyLevel}
+          onChange={(val) => handleChange("urgencyLevel", val)}
+        />
 
         <ToggleSwitch
           label="Mark as Urgent"
@@ -187,15 +217,20 @@ export default function RequestScreen() {
         />
 
         {/* Submit Button */}
-        <TouchableOpacity className="bg-[#E8315B] rounded-lg py-4 items-center mt-2" onPress={handleSubmit}>
-          <Text className="font-semibold text-base text-white">Submit Request</Text>
+        <TouchableOpacity
+          className="bg-[#E8315B] rounded-lg py-4 items-center mt-2"
+          onPress={handleSubmit}>
+          <Text className="font-semibold text-base text-white">
+            Submit Request
+          </Text>
         </TouchableOpacity>
 
         {/* Footer Note */}
         <View className="flex-row mt-5 p-4 bg-gray-50 rounded-lg border border-gray-100">
           <Info size={16} color="#666" />
           <Text className="text-xs text-gray-500 ml-2 flex-1">
-            By submitting this form, you agree to our terms and conditions regarding organ donation requests.
+            By submitting this form, you agree to our terms and conditions
+            regarding organ donation requests.
           </Text>
         </View>
       </View>

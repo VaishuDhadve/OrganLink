@@ -35,7 +35,7 @@ interface RequestFilters {
 }
 
 export function useRequests() {
-const {userData} = useAuth()
+  const { userData } = useAuth();
 
   const [requests, setRequests] = useState<OrganRequest[]>([]);
   const [loading, setLoading] = useState(true);
@@ -67,10 +67,13 @@ const {userData} = useAuth()
     async (
       requestData: Omit<OrganRequest, "id" | "createdAt" | "status" | "userId">
     ) => {
+      if (!userData) {
+        return { success: false, error: "User not logged in" };
+      }
       try {
         const docRef = await addDoc(collection(db, "requests"), {
           ...requestData,
-          userId: userData?.email,
+          userId: userData.id,
           status: "pending",
           createdAt: Date.now(),
         });
@@ -79,7 +82,7 @@ const {userData} = useAuth()
         return { success: false, error: err.message };
       }
     },
-    []
+    [userData]
   );
 
   const updateRequest = useCallback(
