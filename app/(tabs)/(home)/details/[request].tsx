@@ -91,7 +91,7 @@ export default function RecipientDetails() {
         <View className="flex-row justify-between items-start">
           <View>
             <Text className="text-white text-2xl font-bold">
-              {requestData.organType} Needed
+              {requestData.organType}
             </Text>
             <Text className="text-white opacity-80 mt-1">
               Request ID: #{requestData.id.slice(0, 8)}

@@ -166,6 +166,7 @@ export default function ProfileScreen() {
             <TouchableOpacity
               onPress={() => router.push("/(tabs)/profile/update_donar")}
               className="bg-[#E8315B] rounded-lg py-3 mt-4"
+              
             >
               <Text className="text-white text-center font-medium">
                 Update Donor Profile

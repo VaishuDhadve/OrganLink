@@ -231,7 +231,10 @@ export default function HomeScreen() {
             Your decision to become an organ donor can give someone a second
             chance at life.
           </Text>
-          <TouchableOpacity className="bg-white py-3 rounded-lg">
+          <TouchableOpacity
+            onPress={() => router.navigate("/(tabs)/profile")}
+            className="bg-white py-3 rounded-lg"
+          >
             <Text className="text-[#E8315B] font-semibold text-center">
               Register as Donor
             </Text>
